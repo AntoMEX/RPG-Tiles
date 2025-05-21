@@ -21,7 +21,7 @@ void PlayerCharacter::Update()
 		if (position.y < scrollBorder)
 		{
 			position.y = scrollBorder;
-			cameraOffset.y += speed * GetFrameTime();
+			cameraOffset.y -= speed * GetFrameTime();
 		}
 	}
 

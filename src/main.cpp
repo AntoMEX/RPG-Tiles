@@ -25,6 +25,8 @@ by Jeffery Myers is marked with CC0 1.0. To view a copy of this license, visit h
 #include "GameObject.h"
 #include "EnemyCharacter.h"
 
+#include <unordered_map>
+
 extern "C" 
 {
 	#include "md5.h"
@@ -204,6 +206,33 @@ int main()
 		printf("%02X", result[i]);
 	}
 
+	// Creamos el arreglo de GameObjects y la tabla de UIDs
+	std::vector<GameObject*> gameobjects;
+	std::unordered_map<std::string, std::string> objectTable;
+
+	// Helper para convertir MD5 bytes a string hex
+	auto md5ToHex = [&](const uint8_t bytes[16]) {
+		char buf[33];
+		for (int i = 0;i < 16;i++) sprintf(buf + 2 * i, "%02X", bytes[i]);
+		buf[32] = '\0';
+		return std::string(buf);
+		};
+
+	// Insertar player
+	gameobjects.push_back(player);
+	// md5String ya llenó player->uid en el constructor
+	objectTable[md5ToHex(player->uid)] = "Player1";
+
+	// Creamos 3 enemigos
+	for (int i = 0;i < 3;i++) {
+		char nameBuf[16];
+		sprintf(nameBuf, "Enemy%d", i + 1);
+		EnemyCharacter* e = new EnemyCharacter(nameBuf, player);
+		e->Start();
+		gameobjects.push_back(e);
+		objectTable[md5ToHex(e->uid)] = nameBuf;
+	}
+
 	LoadMap(mapa, maxTilesH, maxTilesV, mapNames[selectedMapIndex]);
 
 	//Texture wabbit = LoadTexture("wabbit_alpha.png");
@@ -282,7 +311,10 @@ int main()
 				cameraOffset.x += velPlayer.x * GetFrameTime();
 			}
 		}*/
-		player->Update();
+
+		for (auto obj : gameobjects) obj->Update();
+
+		//player->Update();
 		panel->update();
 
 		//posPlayer.x += velPlayer.x * GetFrameTime();
@@ -311,11 +343,18 @@ int main()
 
 		//DrawTexture(wabbit, posPlayer.x, posPlayer.y, WHITE);
 		//Jugador
-		player->Draw();
+		//player->Draw();
+
+		for (auto obj : gameobjects) obj->Draw();
+
 		//UI
 		panel->draw();
 
 		EndDrawing();
+	}
+	for (auto obj : gameobjects) 
+	{
+		delete obj;
 	}
 
 	UnloadTexture(tiles[4]);

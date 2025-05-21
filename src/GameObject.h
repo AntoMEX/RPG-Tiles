@@ -11,11 +11,11 @@ class GameObject
 {
 protected:
 	std::string name;
-	//unique id en MD5
-	uint8_t uid[16]; //arreglo de 16
+	
 
 public:
-
+	//unique id en MD5
+	uint8_t uid[16]; //arreglo de 16
 	Vector2 position;
 	Texture2D texture;
 
