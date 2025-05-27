@@ -218,12 +218,12 @@ int main()
 		return std::string(buf);
 		};
 
-	// Insertar player
+	//Insertar player
 	gameobjects.push_back(player);
 	// md5String ya llenó player->uid en el constructor
-	objectTable[md5ToHex(player->uid)] = "Player1";
+	//objectTable[md5ToHex(player->uid)] = "Player1";
 
-	// Creamos 3 enemigos
+	//Creamos 3 enemigos
 	for (int i = 0;i < 3;i++) {
 		char nameBuf[16];
 		sprintf(nameBuf, "Enemy%d", i + 1);

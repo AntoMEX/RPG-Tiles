@@ -13,6 +13,26 @@ void PlayerCharacter::Start()
 	scrollBorder = GetScreenHeight() * 0.3f;
 }
 
+void PlayerCharacter::Draw()
+{
+	DrawTexture(texture, position.x, position.y, WHITE);
+	DrawText("PLAYER", position.x, position.y - 40, 10, WHITE);
+	DrawText(getUID().c_str(), position.x, position.y - 20, 10, WHITE);
+	//hud
+
+	DrawRectangle(10, 10, 100, 30, WHITE);
+
+	if (inventory != nullptr && inventory->currentItem != nullptr)
+	{
+		DrawText(inventory->currentItem->data->name.c_str(), 20, 20, 20, BLACK);
+
+	}
+	else
+	{
+		DrawText("EMPTY", 20, 20, 20, BLACK);
+	}
+}
+
 void PlayerCharacter::Update()
 {
 	if (IsKeyDown(KEY_W))
@@ -55,29 +75,9 @@ void PlayerCharacter::Update()
 		}
 	}
 
-	if (IsKeyPressed(KEY_I)) 
+	if (IsKeyPressed(KEY_I))
 	{
 		//Asume que siempre tiene inventory
 		inventory->nextItem();
 	}
 }
-
-void PlayerCharacter::Draw()
-{
-	DrawTexture(texture, position.x, position.y, WHITE);
-	DrawText("PLAYER", position.x, position.y - 40, 10, WHITE);
-	//hud
-
-	DrawRectangle(10, 10, 100, 30, WHITE);
-
-	if (inventory != nullptr && inventory->currentItem != nullptr)
-	{
-		DrawText(inventory->currentItem->data->name.c_str(), 20, 20, 20, BLACK);
-
-	}
-	else
-	{
-		DrawText("EMPTY", 20, 20, 20, BLACK);
-	}
-}
-

@@ -62,7 +62,6 @@ public:
 				state = moving;
 			}
 		}
-		
 	}
 
 	void draw()
