@@ -18,6 +18,13 @@ void EnemyCharacter::Update()
 		position.x += dir.x * speed * GetFrameTime();
 		position.y += dir.x * speed * GetFrameTime();
 	}
+
+	/*Vector2 direction = Vector2Subtract(player->position, enemy->position);
+	float length = Vector2Length(direction);
+	if (length > 1.0f) {
+		direction = Vector2Normalize(direction);
+		enemy->position = Vector2Add(enemy->position, Vector2Scale(direction, enemy->speed * GetFrameTime()));
+	}*/
 }
 
 void EnemyCharacter::Draw()

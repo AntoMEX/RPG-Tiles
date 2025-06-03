@@ -25,6 +25,11 @@ void Inventory::nextItem()
 	}
 }
 
+void Inventory::prevItem()
+{
+
+}
+
 void Inventory::debugPrintContents()
 {
 	//Iterar en la lista
