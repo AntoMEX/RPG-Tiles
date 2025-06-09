@@ -75,7 +75,7 @@ void PlayerCharacter::Update()
 		}
 	}
 
-	if (IsKeyPressed(KEY_I))
+	if (IsKeyPressed(KEY_LEFT))
 	{
 		//Asume que siempre tiene inventory
 		inventory->nextItem();

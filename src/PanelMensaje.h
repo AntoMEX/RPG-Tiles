@@ -44,13 +44,22 @@ public:
 			if (position.y != desiredPositionY)
 			{
 				//lerp position, lerp cada ciclo resta la posicion deseada (final) menos la posición actual
-				position.y += (desiredPositionY - position.y) * 5.0f * GetFrameTime();
+				position.y += (desiredPositionY - position.y) * 10.0f * GetFrameTime();
 			}
-			if (desiredPositionY - position.y < 0.1f)
+			if (abs(desiredPositionY - position.y) < 0.1f)
 			{
 				position.y = desiredPositionY;
 				state = showing;
 				timer = 0;
+
+				if (desiredPositionY < 0) 
+				{
+					state = hidden;
+				}
+				else 
+				{
+					state = showing;
+				}
 			}
 		}
 		else if (state == showing)

@@ -14,6 +14,8 @@ public:
 
 	void nextItem();
 
+	void prevItem();
+
 	void debugPrintContents();
 
 	LLNode<Item>* currentItem;

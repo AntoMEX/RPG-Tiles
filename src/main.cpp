@@ -15,6 +15,7 @@ by Jeffery Myers is marked with CC0 1.0. To view a copy of this license, visit h
 #include <limits>
 #include <cstring>
 #include <cstdio>
+#include <queue>
 
 #include "LinkedList.h"
 #include "Inventory.h"
@@ -34,6 +35,7 @@ extern "C"
 
 typedef std::vector<std::vector<int>> Map2D; //Array mapa 
 
+//Mapeado
 void LoadMap(Map2D& _map, size_t _x, size_t _y, const std::string& filename)
 {
 	std::ifstream filemap(filename);
@@ -63,6 +65,7 @@ void LoadMap(Map2D& _map, size_t _x, size_t _y, const std::string& filename)
 	}
 }
 
+//Musica
 Music LoadBGM()
 {
 	const char* defaultBGM = "TECNO1.XM";
@@ -130,8 +133,6 @@ int main()
 	int temp3 = q.dequeue();
 	q.debugPrintContents();
 
-	
-
 	std::vector<int> misdatos(15, 0);
 	for (int i = 0; i < 15; i++)
 		std::cout << "valor: " << misdatos[i] << std::endl;
@@ -142,9 +143,8 @@ int main()
 	int maxTilesH = 25;
 	int maxTilesV = 20;
 
+	//Pantalla inicial
 	InitWindow(maxTilesH * tileSize, maxTilesV * tileSize, "Tiles");
-	//printf("size of char: %d\n", sizeof(char));
-	//printf("size of char*: %d\n", sizeof(char*));
 
 	Map2D mapa(maxTilesV, std::vector<int>(maxTilesH, 0));
 
@@ -153,6 +153,7 @@ int main()
 	const char* mapNames[3] = { "map.txt", "map2.txt", "map3.txt" };
 	int selectedMapIndex = 0;
 	bool mapSelected = false;
+	//Selección de mapa
 	while (!mapSelected && !WindowShouldClose())
 	{
 		BeginDrawing();
@@ -189,11 +190,17 @@ int main()
 	//Panelmensaje
 	PanelMensaje* panel = new PanelMensaje(GetScreenWidth() - 210, 200, 50, 2);
 
-	//Para prueba, simularemos que obtiene de golpe un pujado de logros
+	/*Para prueba, simularemos que obtiene de golpe un pujado de logros
 	panel->Show("thief");
 	panel->Show("gossip");
 	panel->Show("fisher");
-	panel->Show("hoarder");
+	panel->Show("hoarder");*/
+
+	std::queue<std::string> mensajePendiente;
+	mensajePendiente.push("Logro: thief");
+	mensajePendiente.push("Logro: gossip");
+	mensajePendiente.push("Logro: fisher");
+	mensajePendiente.push("Logro: hoarder");
 
 	//Prueba de calculo de hash md5 usando la biblioteca de zunawe
 	uint8_t result[16];
@@ -315,16 +322,20 @@ int main()
 		for (auto obj : gameobjects) obj->Update();
 
 		//player->Update();
+
+		//Paneles
 		panel->update();
 
-		//posPlayer.x += velPlayer.x * GetFrameTime();
-		//posPlayer.y += velPlayer.y * GetFrameTime();
+		if (!mensajePendiente.empty() && panel->position.y <= -panel->size.y) 
+		{
+			panel->Show(mensajePendiente.front());
+			mensajePendiente.pop();
+		}
 
 		if (IsKeyPressed(KEY_SPACE))
 		{
 			panel->Show("Hola profe");
 		}
-
 
 		BeginDrawing();
 		ClearBackground(BLACK);
