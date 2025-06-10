@@ -109,11 +109,6 @@ struct Evento
 	std::string descripcion;
 	int prioridad;
 
-	/*bool operator>(const Evento& otro) const
-	{
-		return prioridad > otro.prioridad;
-	}*/
-
 	bool operator<(const Evento& otro) const
 	{
 		return prioridad < otro.prioridad;
@@ -197,7 +192,7 @@ int main()
 	}
 
 	//Crear jugador
-	//Prueba de inventario
+	//Inventario
 	Inventory* inventario = new Inventory();
 	inventario->AddItem(new Item("Espada", 1));
 	inventario->AddItem(new Item("Pocion", 2));
@@ -208,11 +203,6 @@ int main()
 	player->Start();
 	player->inventory = inventario;
 	player->PrintUID();
-
-	//Hacer 2 o 3 enemigos que se muevan hacia el
-
-	//Todos los gameobjects deberemos guardar su uid ene esta tabla
-	//Tablahash
 
 	//Panelmensaje
 	PanelMensaje* panel = new PanelMensaje(GetScreenWidth() - 210, 200, 50, 2);
@@ -226,9 +216,9 @@ int main()
 
 	//Heap
 	Heap<Evento> eventos;
-	eventos.Insert({ "Tomar agua", 8 });
-	eventos.Insert({ "Comer algo", 5 });
-	eventos.Insert({ "Burlarse", 3 });
+	eventos.Insert({ "E: Tomar agua", 8 });
+	eventos.Insert({ "E: Comer algo", 5 });
+	eventos.Insert({ "E: Burlarse", 3 });
 
 	if (!eventos.IsEmpty()) 
 	{
@@ -295,8 +285,8 @@ int main()
 	Music bgm = LoadMusicStream("TECNO1.XM");
 	PlayMusicStream(bgm);
 
-	////Borde de la pantalla
-	////Borde cuando se empieza a mover la camara en vez del jugador
+	//Borde de la pantalla
+	//Borde cuando se empieza a mover la camara en vez del jugador
 	//float scrollBorder = 0.4f * GetScreenHeight();
 
 	char buffer[64];
@@ -318,17 +308,17 @@ int main()
 			panel->Show(mensajePendiente.front());
 			mensajePendiente.pop();
 		}
-
+		//Easter Egg
 		if (IsKeyPressed(KEY_SPACE))
 		{
 			panel->Show("Hola profe");
 		}
-
+		//Hacer la tarea
 		if (IsKeyPressed(KEY_E))
 		{
 			if (!eventos.IsEmpty())
 			{
-				eventos.Extract(); // Quitar el evento actual
+				eventos.Extract(); //Quitar el evento actual
 				if (!eventos.IsEmpty())
 					panel->Show(eventos.Peek().descripcion); //Mostrar el siguiente
 				else

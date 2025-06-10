@@ -20,7 +20,7 @@ void PlayerCharacter::Draw()
 	DrawText(getUID().c_str(), position.x, position.y - 20, 10, WHITE);
 	//hud
 
-	DrawRectangle(10, 10, 100, 30, WHITE);
+	DrawRectangle(10, 10, 120, 30, WHITE);
 
 	if (inventory != nullptr && inventory->currentItem != nullptr)
 	{
