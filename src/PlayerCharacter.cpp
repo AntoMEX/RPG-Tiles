@@ -75,9 +75,12 @@ void PlayerCharacter::Update()
 		}
 	}
 
-	if (IsKeyPressed(KEY_LEFT))
+	if (IsKeyPressed(KEY_RIGHT))
 	{
 		//Asume que siempre tiene inventory
 		inventory->nextItem();
+	}
+	if (IsKeyPressed(KEY_LEFT)) {
+		inventory->prevItem();
 	}
 }

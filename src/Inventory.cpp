@@ -27,7 +27,29 @@ void Inventory::nextItem()
 
 void Inventory::prevItem()
 {
+	if (currentItem == nullptr || head == nullptr)
+		return;
 
+	//Si esta en el primer nodo, ir al final
+	if (currentItem == head)
+	{
+		LLNode<Item>* iter = head;
+		while (iter->next != nullptr)
+		{
+			iter = iter->next;
+		}
+		currentItem = iter;
+		return;
+	}
+
+	//Buscar el nodo anterior al currentItem
+	LLNode<Item>* iter = head;
+	while (iter->next != currentItem && iter->next != nullptr)
+	{
+		iter = iter->next;
+	}
+
+	currentItem = iter;
 }
 
 void Inventory::debugPrintContents()

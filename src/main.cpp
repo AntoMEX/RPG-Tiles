@@ -25,6 +25,7 @@ by Jeffery Myers is marked with CC0 1.0. To view a copy of this license, visit h
 #include "PanelMensaje.h"
 #include "GameObject.h"
 #include "EnemyCharacter.h"
+#include "Heap.h"
 
 #include <unordered_map>
 
@@ -89,6 +90,15 @@ Music LoadBGM()
 	{
 		std::cout << "No se pudo abrir el archivo config.ini, usando BGM default" << std::endl;
 		return LoadMusicStream("TECNO1.XM");
+	}
+}
+
+void VolcarTablaUIDs(const std::unordered_map<std::string, std::string>& table)
+{
+	std::cout << "\n=== Tabla de UIDs ===\n";
+	for (const auto& pair : table)
+	{
+		std::cout << "UID: " << pair.first << " -> Nombre: " << pair.second << std::endl;
 	}
 }
 
@@ -183,19 +193,13 @@ int main()
 
 	//Hacer 2 o 3 enemigos que se muevan hacia el
 	
-
 	//Todos los gameobjects deberemos guardar su uid ene esta tabla
 	//Tablahash
 
 	//Panelmensaje
 	PanelMensaje* panel = new PanelMensaje(GetScreenWidth() - 210, 200, 50, 2);
 
-	/*Para prueba, simularemos que obtiene de golpe un pujado de logros
-	panel->Show("thief");
-	panel->Show("gossip");
-	panel->Show("fisher");
-	panel->Show("hoarder");*/
-
+	//Para prueba, simularemos que obtiene de golpe un pujado de logros
 	std::queue<std::string> mensajePendiente;
 	mensajePendiente.push("Logro: thief");
 	mensajePendiente.push("Logro: gossip");
@@ -213,12 +217,13 @@ int main()
 		printf("%02X", result[i]);
 	}
 
-	// Creamos el arreglo de GameObjects y la tabla de UIDs
+	//Arreglo de GameObjects y la tabla de UIDs
 	std::vector<GameObject*> gameobjects;
 	std::unordered_map<std::string, std::string> objectTable;
 
-	// Helper para convertir MD5 bytes a string hex
-	auto md5ToHex = [&](const uint8_t bytes[16]) {
+	//Helper para convertir MD5 bytes a string hex
+	auto md5ToHex = [&](const uint8_t bytes[16]) 
+		{
 		char buf[33];
 		for (int i = 0;i < 16;i++) sprintf(buf + 2 * i, "%02X", bytes[i]);
 		buf[32] = '\0';
@@ -228,21 +233,24 @@ int main()
 	//Insertar player
 	gameobjects.push_back(player);
 	// md5String ya llenó player->uid en el constructor
-	//objectTable[md5ToHex(player->uid)] = "Player1";
+	objectTable[md5ToHex(player->uid)] = "Player1";
 
 	//Creamos 3 enemigos
-	for (int i = 0;i < 3;i++) {
+	for (int i = 0; i < 3; i++)
+	{
 		char nameBuf[16];
 		sprintf(nameBuf, "Enemy%d", i + 1);
 		EnemyCharacter* e = new EnemyCharacter(nameBuf, player);
 		e->Start();
+		//Posiciones iniciales separadas
+		e->position = { 80.0f + 180.0f * i,  60.0f + 50.0f * (i % 2) };
 		gameobjects.push_back(e);
 		objectTable[md5ToHex(e->uid)] = nameBuf;
 	}
 
-	LoadMap(mapa, maxTilesH, maxTilesV, mapNames[selectedMapIndex]);
+	VolcarTablaUIDs(objectTable);
 
-	//Texture wabbit = LoadTexture("wabbit_alpha.png");
+	LoadMap(mapa, maxTilesH, maxTilesV, mapNames[selectedMapIndex]);
 
 	enum Tiletype
 	{
@@ -258,11 +266,6 @@ int main()
 	Music bgm = LoadMusicStream("TECNO1.XM");
 	PlayMusicStream(bgm);
 
-	/*Inicialización del jugador
-	Vector2 posPlayer = { GetScreenWidth() / 2, GetScreenHeight() / 2 };
-	Vector2 velPlayer = { 0,0 };
-	Vector2 cameraOffset = { 0,0 };*/
-
 	////Borde de la pantalla
 	////Borde cuando se empieza a mover la camara en vez del jugador
 	//float scrollBorder = 0.4f * GetScreenHeight();
@@ -273,55 +276,10 @@ int main()
 	while (!WindowShouldClose())
 	{
 		UpdateMusicStream(bgm);
-		//velPlayer = { 0,0 };
-		//Inputs
-		/*if (IsKeyDown(KEY_W)) 
-		{
-			velPlayer.y = -500;
-			posPlayer.y = posPlayer.y + velPlayer.y * GetFrameTime();
-			if (posPlayer.y < scrollBorder) 
-			{
-				posPlayer.y = scrollBorder;
-				cameraOffset.y += velPlayer.y * GetFrameTime();
-			}
-		}
-			
-		if (IsKeyDown(KEY_A)) 
-		{
-			velPlayer.x = -500;
-			posPlayer.x = posPlayer.x + velPlayer.x * GetFrameTime();
-			if (posPlayer.x < scrollBorder)
-			{
-				posPlayer.x = scrollBorder;
-				cameraOffset.x += velPlayer.x * GetFrameTime();
-			}
-		}
-			
-		if (IsKeyDown(KEY_S)) 
-		{
-			velPlayer.y = 500;
-			posPlayer.y = posPlayer.y + velPlayer.y * GetFrameTime();
-			if (posPlayer.y > GetScreenHeight() - scrollBorder) 
-			{
-				posPlayer.y = GetScreenHeight() - scrollBorder;
-				cameraOffset.y += velPlayer.y * GetFrameTime();
-			}
-		}
-			
-		if (IsKeyDown(KEY_D)) 
-		{
-			velPlayer.x = 500;
-			posPlayer.x = posPlayer.x + velPlayer.x * GetFrameTime();
-			if (posPlayer.x > GetScreenWidth() - scrollBorder)
-			{
-				posPlayer.x = GetScreenWidth() - scrollBorder;
-				cameraOffset.x += velPlayer.x * GetFrameTime();
-			}
-		}*/
 
-		for (auto obj : gameobjects) obj->Update();
-
-		//player->Update();
+		for (auto obj : gameobjects) 
+			if (obj->isEnabled())
+				obj->Update();
 
 		//Paneles
 		panel->update();
@@ -352,11 +310,9 @@ int main()
 		sprintf(buffer, "FPS: %.3f", 1/GetFrameTime()); //f=1/periodo  0.016 seg = 60 htz o 60 fps
 		DrawText(buffer, 20, 60, 20, YELLOW);
 
-		//DrawTexture(wabbit, posPlayer.x, posPlayer.y, WHITE);
-		//Jugador
-		//player->Draw();
-
-		for (auto obj : gameobjects) obj->Draw();
+		for (auto obj : gameobjects) 
+			if (obj->isEnabled())
+				obj->Draw();
 
 		//UI
 		panel->draw();
