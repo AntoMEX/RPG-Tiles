@@ -93,6 +93,7 @@ Music LoadBGM()
 	}
 }
 
+//Tabla de UID
 void VolcarTablaUIDs(const std::unordered_map<std::string, std::string>& table)
 {
 	std::cout << "\n=== Tabla de UIDs ===\n";
@@ -101,6 +102,23 @@ void VolcarTablaUIDs(const std::unordered_map<std::string, std::string>& table)
 		std::cout << "UID: " << pair.first << " -> Nombre: " << pair.second << std::endl;
 	}
 }
+
+//Eventos de Heap
+struct Evento
+{
+	std::string descripcion;
+	int prioridad;
+
+	/*bool operator>(const Evento& otro) const
+	{
+		return prioridad > otro.prioridad;
+	}*/
+
+	bool operator<(const Evento& otro) const
+	{
+		return prioridad < otro.prioridad;
+	}
+};
 
 int main()
 {
@@ -192,7 +210,7 @@ int main()
 	player->PrintUID();
 
 	//Hacer 2 o 3 enemigos que se muevan hacia el
-	
+
 	//Todos los gameobjects deberemos guardar su uid ene esta tabla
 	//Tablahash
 
@@ -205,6 +223,17 @@ int main()
 	mensajePendiente.push("Logro: gossip");
 	mensajePendiente.push("Logro: fisher");
 	mensajePendiente.push("Logro: hoarder");
+
+	//Heap
+	Heap<Evento> eventos;
+	eventos.Insert({ "Tomar agua", 8 });
+	eventos.Insert({ "Comer algo", 5 });
+	eventos.Insert({ "Burlarse", 3 });
+
+	if (!eventos.IsEmpty()) 
+	{
+		panel->Show(eventos.Peek().descripcion);
+	}
 
 	//Prueba de calculo de hash md5 usando la biblioteca de zunawe
 	uint8_t result[16];
@@ -293,6 +322,18 @@ int main()
 		if (IsKeyPressed(KEY_SPACE))
 		{
 			panel->Show("Hola profe");
+		}
+
+		if (IsKeyPressed(KEY_E))
+		{
+			if (!eventos.IsEmpty())
+			{
+				eventos.Extract(); // Quitar el evento actual
+				if (!eventos.IsEmpty())
+					panel->Show(eventos.Peek().descripcion); //Mostrar el siguiente
+				else
+					panel->Show("No hay mas eventos");
+			}
 		}
 
 		BeginDrawing();
