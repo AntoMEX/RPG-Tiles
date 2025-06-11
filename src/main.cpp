@@ -93,7 +93,7 @@ Music LoadBGM()
 	}
 }
 
-//Tabla de UID
+//Tabla de UIDs
 void VolcarTablaUIDs(const std::unordered_map<std::string, std::string>& table)
 {
 	std::cout << "\n=== Tabla de UIDs ===\n";
